@@ -1,0 +1,39 @@
+name: SonarCloud Analysis (Frontend)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  sonarcloud:
+    name: SonarCloud Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests (optional)
+        run: npm test -- --watchAll=false
+        continue-on-error: true
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          args: >
+            -Dsonar.projectKey=uthaya2307_restaurant-management-frontend
+            -Dsonar.organization=uthaya2307
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
