@@ -19,22 +19,27 @@ function MenuCrud() {
   }, []);
 
   const loadItems = () => {
-    getItems().then(res => setItems(res.data));
+    getItems()
+      .then(res => setItems(res.data))
+      .catch(err => {
+        console.error("Menu load failed:", err);
+        alert("Failed to load menu. Check backend URL/CORS/network and console for details.");
+      });
   };
 
   // Add or Update item
   const handleSubmit = () => {
-    if (editId) {
-      updateItem(editId, form).then(() => {
+    const action = editId ? updateItem(editId, form) : addItem(form);
+
+    action
+      .then(() => {
         resetForm();
         loadItems();
+      })
+      .catch((err) => {
+        console.error("Save failed:", err);
+        alert("Failed to save menu item. Check backend URL/CORS/network and console for details.");
       });
-    } else {
-      addItem(form).then(() => {
-        resetForm();
-        loadItems();
-      });
-    }
   };
 
   const resetForm = () => {
@@ -54,7 +59,12 @@ function MenuCrud() {
   };
 
   const handleDelete = (id) => {
-    deleteItem(id).then(() => loadItems());
+    deleteItem(id)
+      .then(() => loadItems())
+      .catch((err) => {
+        console.error("Delete failed:", err);
+        alert("Failed to delete menu item. Check backend URL/CORS/network and console for details.");
+      });
   };
 
   return (
