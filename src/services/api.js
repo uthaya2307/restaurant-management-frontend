@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "restaurant-backend-cxaea6behcf7dvhu.southeastasia-01.azurewebsites.net/api/menu"
+  baseURL: "https://restaurant-backend-cxaea6behcf7dvhu.southeastasia-01.azurewebsites.net/api"
 });
 
 // CRUD APIs
