@@ -59,19 +59,14 @@ function MenuCrud() {
   };
 
   const handleDelete = (id) => {
-  const password = prompt("Enter password to delete:");
-
-  if (password === "2005") {
     deleteItem(id)
       .then(() => loadItems())
       .catch((err) => {
         console.error("Delete failed:", err);
-        alert("Failed to delete menu item.");
+        alert("Failed to delete menu item. Check backend URL/CORS/network and console for details.");
       });
-  } else {
-    alert("Wrong password! ❌");
-  }
-};
+  };
+
   return (
     <div className="container mt-4">
 
