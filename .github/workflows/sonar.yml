@@ -30,7 +30,7 @@ jobs:
         continue-on-error: true
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2
+        uses: SonarSource/sonarcloud-github-action@v2.3.0
         with:
           args: >
             -Dsonar.projectKey=uthaya2307_restaurant-management-frontend

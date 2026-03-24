@@ -20,6 +20,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "proxy": "https://restaurant-backend-cxaea6behcf7dvhu.southeastasia-01.azurewebsites.net",
   "eslintConfig": {
     "extends": [
       "react-app",

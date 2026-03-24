@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getItems, addItem, updateItem, deleteItem } from "../services/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -14,23 +14,46 @@ function MenuCrud() {
   });
   const [editId, setEditId] = useState(null);
 
-  // Load all items on page load
-  useEffect(() => {
-    loadItems();
-  }, []);
+  const getItemId = (item) => item?.id ?? item?._id;
 
-  const loadItems = () => {
+  const toFormState = (item) => ({
+    name: item?.name || "",
+    description: item?.description || "",
+    price: item?.price ?? "",
+    category: item?.category || "",
+    available: Boolean(item?.available)
+  });
+
+  // Load all items on page load
+  const loadItems = useCallback(() => {
     getItems()
-      .then(res => setItems(res.data))
+      .then(res => {
+        const normalizedItems = Array.isArray(res.data)
+          ? res.data.map((item) => ({ ...item, id: getItemId(item) }))
+          : [];
+        setItems(normalizedItems);
+      })
       .catch(err => {
         console.error("Menu load failed:", err);
         alert("Failed to load menu. Check backend URL/CORS/network and console for details.");
       });
-  };
+  }, []);
+
+  useEffect(() => {
+    loadItems();
+  }, [loadItems]);
 
   // Add or Update item
   const handleSubmit = () => {
-    const action = editId ? updateItem(editId, form) : addItem(form);
+    const payload = {
+      name: form.name,
+      description: form.description,
+      price: form.price,
+      category: form.category,
+      available: form.available
+    };
+
+    const action = editId ? updateItem(editId, payload) : addItem(payload);
 
     action
       .then(() => {
@@ -55,8 +78,14 @@ function MenuCrud() {
   };
 
   const handleEdit = (item) => {
-    setEditId(item.id);
-    setForm(item);
+    const itemId = getItemId(item);
+    if (!itemId) {
+      alert("Cannot edit this item because its ID is missing.");
+      return;
+    }
+
+    setEditId(itemId);
+    setForm(toFormState(item));
   };
 
   const handleDelete = (id) => {

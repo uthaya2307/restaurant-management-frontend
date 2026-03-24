@@ -1,9 +1,12 @@
 import axios from "axios";
 
+const DEV_BASE_URL = "/api";
+const PROD_BASE_URL = "https://restaurant-backend-cxaea6behcf7dvhu.southeastasia-01.azurewebsites.net/api";
+
 const API = axios.create({
   baseURL:
     process.env.REACT_APP_API_BASE_URL ||
-    "http://localhost:5000/api" // for local testing (fallback to common backend port)
+    (process.env.NODE_ENV === "development" ? DEV_BASE_URL : PROD_BASE_URL)
 });
 
 // CRUD APIs
