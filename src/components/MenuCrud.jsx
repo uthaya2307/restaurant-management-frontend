@@ -3,6 +3,7 @@ import { getItems, addItem, updateItem, deleteItem } from "../services/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function MenuCrud() {
+  const DELETE_PASSWORD = process.env.REACT_APP_DELETE_PASSWORD || "2005";
   const [items, setItems] = useState([]);
   const [form, setForm] = useState({
     name: "",
@@ -59,19 +60,28 @@ function MenuCrud() {
   };
 
   const handleDelete = (id) => {
-  const password = prompt("Enter password to delete:");
+    const password = prompt("Enter password to delete:");
 
-  if (password === "2005") {
+    if (password === null) {
+      return;
+    }
+
+    if (password.trim() !== DELETE_PASSWORD) {
+      alert("Incorrect password!");
+      return;
+    }
+
+    if (!window.confirm("Are you sure you want to delete this item?")) {
+      return;
+    }
+
     deleteItem(id)
       .then(() => loadItems())
       .catch((err) => {
         console.error("Delete failed:", err);
         alert("Failed to delete menu item.");
       });
-  } else {
-    alert("Wrong password! ❌");
-  }
-};
+  };
 
   return (
     <div className="container mt-4">
@@ -147,8 +157,10 @@ function MenuCrud() {
                   Edit
                 </button>
 
-                <button className="btn btn-sm btn-danger"
-                  onClick={() => handleDelete(item.id)}>
+                <button
+                  className="btn btn-sm btn-danger"
+                  onClick={() => handleDelete(item.id)}
+                >
                   Delete
                 </button>
               </td>
